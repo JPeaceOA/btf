@@ -1,0 +1,25 @@
+// prisma/schema.prisma
+// Run: npx prisma migrate dev --name init
+// Then: npx prisma generate
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Registration {
+  id           Int      @id @default(autoincrement())
+  fullName     String
+  position     String
+  organisation String
+  address      String
+  phone        String
+  email        String   @unique
+  createdAt    DateTime @default(now())
+
+  @@map("registrations")
+}
