@@ -79,48 +79,49 @@ export default function RegistrationPage() {
             <div className=" mb-6">
                 <img 
               src="/1.jpeg" 
-              alt="FMYD Logo" 
+              alt=" " 
               className="h-16 w-auto object-contain" 
             />
-            <p className="text-sm font-bold text-emerald-500 tracking-widest uppercase">
-              NIGERIA
-            </p>
           </div>
         
           {/* Top Text */}
           <div className="text-center mb-6">
-            <p className="text-sm font-bold text-emerald-500 tracking-widest uppercase">
+            <p className="text-sm font-bold text-emerald-800 tracking-widest uppercase">
               NIGERIA SUB-NATIONAL INVESTMENT AND TOURISM INFORMATION SUBMIT FEATURING THE LAUNCH OF A BOOK NIGEIRA
             </p>
           </div>
 
           {/* Logos Container */}
-          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6">
+          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
+            
+           <p className="text-red-800 text-xs text-right">DRIVEN BY A <br/> STRATEGIC <br/> PARTNESHIP OF:</p>
+
+            
             {/* Logo 1 */}
             <img 
               src="/2.jpeg" 
-              alt="FMYD Logo" 
+              alt=" " 
               className="h-16 w-auto object-contain" 
             />
             
             {/* Logo 2 */}
             <img 
               src="/3.jpeg" 
-              alt="Partner Logo 1" 
+              alt=" " 
               className="h-16 w-auto object-contain" 
             />
             
             {/* Logo 3 */}
             <img 
               src="/4.jpeg" 
-              alt="Partner Logo 2" 
+              alt=" " 
               className="h-16 w-auto object-contain" 
             />
             
             {/* Logo 4 */}
             <img 
               src="/5.jpeg" 
-              alt="Partner Logo 3" 
+              alt=" " 
               className="h-16 w-auto object-contain" 
             />
           </div>
