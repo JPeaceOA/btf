@@ -179,6 +179,16 @@ export default function RegistrationPage() {
                 <input type="text" value={organisation} onChange={(e) => setOrganisation(e.target.value)} placeholder="e.g. Ministry of Youth Development" className={inputClass} required />
               </div>
 
+              <div>
+                <label htmlFor="numberOfGuests" className="block text-sm font-bold text-black mb-2">Number of Guests <span className="text-emerald-600">*</span></label>
+                <div className="flex items-center border border-black/70 rounded-sm w-36">
+                  <button type="button" onClick={() => setNumberOfGuests(Math.max(1, numberOfGuests - 1))} className="px-4 py-3 text-lg font-bold text-black hover:bg-gray-100 transition-colors select-none">−</button>
+                  <input id="numberOfGuests" type="number" min={1} max={10} value={numberOfGuests} onChange={(e) => setNumberOfGuests(Math.min(10, Math.max(1, Number(e.target.value))))} className="w-full text-center text-sm font-bold text-black bg-white outline-none py-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" />
+                  <button type="button" onClick={() => setNumberOfGuests(Math.min(10, numberOfGuests + 1))} className="px-4 py-3 text-lg font-bold text-black hover:bg-gray-100 transition-colors select-none">+</button>
+                </div>
+                <p className="text-[11px] text-black/50 mt-1">Including yourself</p>
+              </div>
+
               <div className="border-t border-gray-100 pt-6 space-y-6">
                 <h3 className="text-md font-bold text-black uppercase tracking-wider">Address Details</h3>
 
@@ -234,16 +244,6 @@ export default function RegistrationPage() {
                   <label className="block text-sm font-bold text-black mb-2">Email Address <span className="text-emerald-600">*</span></label>
                   <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className={inputClass} required />
                 </div>
-              </div>
-
-              <div className="border-t border-gray-100 pt-6">
-                <label htmlFor="numberOfGuests" className="block text-sm font-bold text-black mb-2">Number of Guests <span className="text-emerald-600">*</span></label>
-                <select id="numberOfGuests" value={numberOfGuests} onChange={(e) => setNumberOfGuests(Number(e.target.value))} className={inputClass}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                    <option key={n} value={n}>{n} {n === 1 ? "Guest" : "Guests"}</option>
-                  ))}
-                </select>
-                <p className="text-[11px] text-black/50 mt-1">Including yourself</p>
               </div>
 
               {error && (
