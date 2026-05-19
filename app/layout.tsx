@@ -17,16 +17,16 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Youth Voice Survey | Federal Ministry of Youth Development",
+  title: "SUB-NATIONAL INVESTMENT AND TOURISM INFORMATION SUBMIT",
   description:
-    "Share your thoughts and help shape youth development programs in Nigeria. Your voice matters.",
+    " ",
   icons: {
-    icon: "/public/fmyd.png",
+    icon: "/1.jpeg",
   },
   openGraph: {
-    title: "Youth Voice Survey - Ministry of Youth Development",
-    description: "Help shape the future of youth development in Nigeria.",
-    images: [{ url: "/public/fmyd.png" }],
+    title: "SUB-NATIONAL INVESTMENT AND TOURISM INFORMATION SUBMIT",
+    description: " ",
+    images: [{ url: "/1.jpeg" }],
   },
 };
 
