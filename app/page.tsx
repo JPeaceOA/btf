@@ -39,14 +39,8 @@ export default function RegistrationPage() {
     if (!lastName.trim()) return "Last name is required";
     if (!position.trim()) return "Position is required";
     if (!organisation.trim()) return "Organisation is required";
-    if (!selectedCountry) return "Country is required";
-    if (!selectedState) return "State is required";
-    if (!selectedCity) return "City is required";
-    if (!buildingApart.trim()) return "Building / Apartment number is required";
-    if (!street.trim()) return "Street address is required";
     if (!phone.trim()) return "Phone number is required";
     if (!/^\+?[0-9\s\-]{7,15}$/.test(phone.trim())) return "Valid phone number is required";
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) return "Valid email is required";
     return "";
   };
 
