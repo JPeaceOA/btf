@@ -263,16 +263,7 @@ export default function RegistrationPage() {
           )}
         </div>
 
-        {/* Sponsorship Button - Redirects to /sponsorship */}
-        <div className="mt-8 text-center">
-          <button
-            type="button"
-            onClick={handleSponsorshipClick}
-            className="inline-block border-2 border-black bg-white hover:bg-black hover:text-white text-black font-black uppercase tracking-widest text-sm px-8 py-3.5 transition-all rounded-sm shadow-sm"
-          >
-            Sponsorship Packages
-          </button>
-        </div>
+      
       </main>
 
       <footer className="relative z-10 border-t border-black bg-white py-6 mt-16">
