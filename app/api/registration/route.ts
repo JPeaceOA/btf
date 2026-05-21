@@ -2,142 +2,83 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await request.json();
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
-    if (
-      !body ||
-      typeof body !== "object" ||
-      !("address" in body) ||
-      !body.address ||
-      typeof body.address !== "object"
-    ) {
-      return NextResponse.json(
-        { error: "Invalid request body" },
-        { status: 400 }
-      );
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+
+  const requiredFields = ["first_name", "last_name", "position", "organisation", "phone", "email"] as const;
+  for (const field of requiredFields) {
+    const v = body[field];
+    if (typeof v !== "string" || !v.trim()) {
+      return NextResponse.json({ error: `Missing or invalid required field: ${field}` }, { status: 400 });
     }
+  }
 
-    // Validate required fields
-    const requiredFields = [
-      "first_name",
-      "last_name",
-      "position",
-      "organisation",
-      "phone",
-      "email",
-    ];
+  const email = (body.email as string).trim();
+  const phone = (body.phone as string).trim();
 
-    for (const field of requiredFields) {
-      if (typeof body[field] !== "string" || !body[field].trim()) {
-        return NextResponse.json(
-          { error: `Missing or invalid required field: ${field}` },
-          { status: 400 }
-        );
-      }
-    }
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+  }
+  if (!/^\+?[0-9\s\-]{7,15}$/.test(phone)) {
+    return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 });
+  }
 
-    const numberOfGuests = typeof body.number_of_guests === "number" && body.number_of_guests >= 1
+  const numberOfGuests =
+    typeof body.number_of_guests === "number" && body.number_of_guests >= 1
       ? Math.min(Math.floor(body.number_of_guests), 10)
       : 1;
 
-    // Validate address object
-    const address = body.address as Record<string, unknown>;
-    const { country, state, city, building_apart, street } = address;
+  // Address is optional — read whatever was provided, default missing pieces to ""
+  const address =
+    body.address && typeof body.address === "object"
+      ? (body.address as Record<string, unknown>)
+      : {};
 
-    if (
-      typeof country !== "string" ||
-      typeof state !== "string" ||
-      typeof city !== "string" ||
-      typeof building_apart !== "string" ||
-      typeof street !== "string" ||
-      !country.trim() ||
-      !state.trim() ||
-      !city.trim() ||
-      !building_apart.trim() ||
-      !street.trim()
-    ) {
-      return NextResponse.json(
-        { error: "Missing required address fields" },
-        { status: 400 }
-      );
-    }
+  const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
 
-    // Validate email format
-    const emailRegex = /\S+@\S+\.\S+/;
-    if (!emailRegex.test(body.email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 }
-      );
-    }
-
-    // Validate phone format
-    const phoneRegex = /^\+?[0-9\s\-]{7,15}$/;
-    if (!phoneRegex.test(body.phone.trim())) {
-      return NextResponse.json(
-        { error: "Invalid phone number format" },
-        { status: 400 }
-      );
-    }
-
-    // Create registration record in database
+  try {
     const registration = await prisma.registration.create({
       data: {
-        firstName: body.first_name.trim(),
-        lastName: body.last_name.trim(),
+        firstName: (body.first_name as string).trim(),
+        lastName: (body.last_name as string).trim(),
         numberOfGuests,
-        position: body.position.trim(),
-        organisation: body.organisation.trim(),
-        country: country.trim(),
-        state: state.trim(),
-        city: city.trim(),
-        buildingApart: building_apart.trim(),
-        street: street.trim(),
-        phone: body.phone.trim(),
-        email: body.email.trim(),
+        position: (body.position as string).trim(),
+        organisation: (body.organisation as string).trim(),
+        country: str(address.country),
+        state: str(address.state),
+        city: str(address.city),
+        buildingApart: str(address.building_apart),
+        street: str(address.street),
+        phone,
+        email,
       },
     });
 
-    console.log(`✓ Registration created: ${registration.id} (${registration.firstName} ${registration.lastName})`);
-
     return NextResponse.json(
-      {
-        success: true,
-        message: "Registration submitted successfully",
-        id: registration.id,
-      },
+      { success: true, message: "Registration submitted successfully", id: registration.id },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Registration error:", error);
-
-    return NextResponse.json(
-      { error: "Failed to process registration. Please try again later." },
-      { status: 500 }
-    );
+    const message = error instanceof Error ? error.message : "Unknown database error";
+    console.error("Registration DB error:", error);
+    return NextResponse.json({ error: `Database error: ${message}` }, { status: 500 });
   }
 }
 
-// Optional: GET endpoint to fetch all registrations (for admin dashboard)
 export async function GET() {
   try {
-    // Optional: Add authentication check here
-    const registrations = await prisma.registration.findMany({
-      orderBy: { createdAt: "desc" },
-    });
-
-    return NextResponse.json({
-      success: true,
-      count: registrations.length,
-      data: registrations,
-    });
+    const registrations = await prisma.registration.findMany({ orderBy: { createdAt: "desc" } });
+    return NextResponse.json({ success: true, count: registrations.length, data: registrations });
   } catch (error) {
-    console.error("Fetch registrations error:", error);
-
-    return NextResponse.json(
-      { error: "Failed to fetch registrations" },
-      { status: 500 }
-    );
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: `Failed to fetch registrations: ${message}` }, { status: 500 });
   }
 }

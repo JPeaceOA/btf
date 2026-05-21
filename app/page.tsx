@@ -73,7 +73,7 @@ export default function RegistrationPage() {
     };
 
     try {
-      const res = await fetch("/api/registration", {
+      const res = await fetch("/SNITIS/api/registration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
