@@ -129,7 +129,7 @@ export default function AdminDashboardPage() {
             <img src="/1.jpeg" alt=" " className="h-10 w-auto object-contain" />
             <div>
               <h1 className="text-sm font-black uppercase tracking-wider text-black">Admin Management Console</h1>
-              <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest">Sub-National Summit Portal</p>
+              <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest">Sub-National Roundtable Portal</p>
             </div>
           </div>
           <button onClick={handleLogout} disabled={loggingOut} className="border border-red-700 hover:bg-red-700 hover:text-white transition-all px-4 py-2 text-xs font-black uppercase tracking-widest text-black rounded-sm disabled:opacity-50 print:hidden" >
