@@ -125,7 +125,7 @@ export default function RegistrationPage() {
           </div>
           <div className="text-center mb-6">
             <p className="text-sm font-bold text-emerald-800 tracking-widest uppercase">
-              NIGERIA SUB-NATIONAL INVESTMENT AND TOURISM INFORMATION SUBMIT FEATURING THE LAUNCH OF A BOOK NIGERIA: DOCUMENTING THE ECONOMIC AND TOURISM POTENTIALS <br/> OF THE 36 STATES AND THE FCT
+              NIGERIA SUB-NATIONAL INVESTMENT AND TOURISM INFORMATION ROUNDTABLE FEATURING THE LAUNCH OF A BOOK NIGERIA: DOCUMENTING THE ECONOMIC AND TOURISM POTENTIALS <br/> OF THE 36 STATES AND THE FCT
             </p>
           </div>
           <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
