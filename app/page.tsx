@@ -22,16 +22,13 @@ export default function RegistrationPage() {
   const [buildingApart, setBuildingApart] = useState("");
   const [street, setStreet] = useState("");
 
-  // Reset dependent fields
   useEffect(() => {
     setSelectedState("");
     setSelectedCity("");
   }, [selectedCountry]);
 
   useEffect(() => {
-    if (selectedState) {
-      setSelectedCity("");
-    }
+    if (selectedState) setSelectedCity("");
   }, [selectedState]);
 
   const validateForm = () => {
@@ -39,11 +36,6 @@ export default function RegistrationPage() {
     if (!lastName.trim()) return "Last name is required";
     if (!position.trim()) return "Position is required";
     if (!organisation.trim()) return "Organisation is required";
-    if (!selectedCountry) return "Country is required";
-    if (!selectedState) return "State is required";
-    if (!selectedCity) return "City is required";
-    if (!buildingApart.trim()) return "Building / Apartment number is required";
-    if (!street.trim()) return "Street address is required";
     if (!phone.trim()) return "Phone number is required";
     if (!/^\+?[0-9\s\-]{7,15}$/.test(phone.trim())) return "Valid phone number is required";
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) return "Valid email is required";
@@ -56,10 +48,7 @@ export default function RegistrationPage() {
     setSuccessMessage("");
 
     const err = validateForm();
-    if (err) {
-      setError(err);
-      return;
-    }
+    if (err) { setError(err); return; }
 
     setLoading(true);
 
@@ -73,11 +62,11 @@ export default function RegistrationPage() {
       position,
       organisation,
       address: {
-        country: countryName,
-        state: stateName,
-        city: selectedCity,
-        building_apart: buildingApart,
-        street: street,
+        ...(countryName && { country: countryName }),
+        ...(stateName && { state: stateName }),
+        ...(selectedCity && { city: selectedCity }),
+        ...(buildingApart && { building_apart: buildingApart }),
+        ...(street && { street }),
       },
       phone,
       email,
@@ -92,9 +81,7 @@ export default function RegistrationPage() {
 
       if (res.ok) {
         setSuccessMessage("Successful. Thank you for registering.");
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        setTimeout(() => window.location.reload(), 3000);
         return;
       }
 
@@ -108,10 +95,7 @@ export default function RegistrationPage() {
   };
 
   const inputClass = "w-full bg-white border border-black/70 text-black text-sm px-4 py-3 outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-all placeholder:text-black/40 rounded-sm";
-
-  const handleSponsorshipClick = () => {
-    window.location.href = "/sponsorship";
-  };
+  const optionalLabel = <span className="text-black/40 font-normal text-xs ml-1">(optional)</span>;
 
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
@@ -148,54 +132,71 @@ export default function RegistrationPage() {
           </h1>
         </div>
 
-        {/* Form Container */}
         <div className="bg-white border border-black p-8 sm:p-10">
           {successMessage ? (
-            <div className="p-8 text-center bg-emerald-50 border-2 border-emerald-600 rounded-sm my-4 animate-fade-in" role="status">
+            <div className="p-8 text-center bg-emerald-50 border-2 border-emerald-600 rounded-sm my-4" role="status">
               <p className="text-xl font-black text-emerald-900 uppercase tracking-wide mb-2">Success!</p>
               <p className="text-base font-bold text-black">{successMessage}</p>
               <p className="text-xs text-emerald-800/60 mt-4 animate-pulse">Refreshing registration window...</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">
+
+              {/* Required fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-black mb-2">First Name <span className="text-emerald-600">*</span></label>
-                  <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="e.g. Amaka" className={inputClass} required />
+                  <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="e.g. Amaka" className={inputClass} />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-black mb-2">Last Name <span className="text-emerald-600">*</span></label>
-                  <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="e.g. Okonkwo" className={inputClass} required />
+                  <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="e.g. Okonkwo" className={inputClass} />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-black mb-2">Position / Title <span className="text-emerald-600">*</span></label>
-                <input type="text" value={position} onChange={(e) => setPosition(e.target.value)} placeholder="e.g. Director, Program Manager" className={inputClass} required />
+                <input type="text" value={position} onChange={(e) => setPosition(e.target.value)} placeholder="e.g. Director, Program Manager" className={inputClass} />
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-black mb-2">Organisation <span className="text-emerald-600">*</span></label>
-                <input type="text" value={organisation} onChange={(e) => setOrganisation(e.target.value)} placeholder="e.g. Ministry of Youth Development" className={inputClass} required />
+                <input type="text" value={organisation} onChange={(e) => setOrganisation(e.target.value)} placeholder="e.g. Ministry of Youth Development" className={inputClass} />
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-bold text-black mb-2">Phone Number <span className="text-emerald-600">*</span></label>
+                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="08012345678" className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-black mb-2">Email Address <span className="text-emerald-600">*</span></label>
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className={inputClass} />
+                </div>
+              </div>
+
+              {/* Optional: Number of Guests */}
               <div>
-                <label htmlFor="numberOfGuests" className="block text-sm font-bold text-black mb-2">Number of Guests <span className="text-emerald-600">*</span></label>
+                <label htmlFor="numberOfGuests" className="block text-sm font-bold text-black mb-2">
+                  Number of Guests {optionalLabel}
+                </label>
                 <div className="flex items-center border border-black/70 rounded-sm w-36">
                   <button type="button" onClick={() => setNumberOfGuests(Math.max(1, numberOfGuests - 1))} className="px-4 py-3 text-lg font-bold text-black hover:bg-gray-100 transition-colors select-none">−</button>
                   <input id="numberOfGuests" type="number" min={1} max={10} value={numberOfGuests} onChange={(e) => setNumberOfGuests(Math.min(10, Math.max(1, Number(e.target.value))))} className="w-full text-center text-sm font-bold text-black bg-white outline-none py-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" />
                   <button type="button" onClick={() => setNumberOfGuests(Math.min(10, numberOfGuests + 1))} className="px-4 py-3 text-lg font-bold text-black hover:bg-gray-100 transition-colors select-none">+</button>
                 </div>
-                <p className="text-[11px] text-black/50 mt-1">Including yourself</p>
               </div>
 
+              {/* Optional: Address */}
               <div className="border-t border-gray-100 pt-6 space-y-6">
-                <h3 className="text-md font-bold text-black uppercase tracking-wider">Address Details</h3>
+                <h3 className="text-md font-bold text-black uppercase tracking-wider">
+                  Address Details {optionalLabel}
+                </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-black mb-2">Country <span className="text-emerald-600">*</span></label>
-                    <select value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)} className={inputClass} required>
+                    <label className="block text-sm font-bold text-black mb-2">Country</label>
+                    <select value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)} className={inputClass}>
                       <option value="">Select Country</option>
                       {Country.getAllCountries().map((country) => (
                         <option key={country.isoCode} value={country.isoCode}>{country.name}</option>
@@ -203,8 +204,8 @@ export default function RegistrationPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-black mb-2">State <span className="text-emerald-600">*</span></label>
-                    <select value={selectedState} onChange={(e) => setSelectedState(e.target.value)} className={inputClass} disabled={!selectedCountry} required>
+                    <label className="block text-sm font-bold text-black mb-2">State</label>
+                    <select value={selectedState} onChange={(e) => setSelectedState(e.target.value)} className={inputClass} disabled={!selectedCountry}>
                       <option value="">Select State</option>
                       {selectedCountry && State.getStatesOfCountry(selectedCountry).map((state) => (
                         <option key={state.isoCode} value={state.isoCode}>{state.name}</option>
@@ -215,8 +216,8 @@ export default function RegistrationPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-black mb-2">City <span className="text-emerald-600">*</span></label>
-                    <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} className={inputClass} disabled={!selectedState} required>
+                    <label className="block text-sm font-bold text-black mb-2">City</label>
+                    <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} className={inputClass} disabled={!selectedState}>
                       <option value="">Select City</option>
                       {selectedCountry && selectedState && City.getCitiesOfState(selectedCountry, selectedState).map((city) => (
                         <option key={city.name} value={city.name}>{city.name}</option>
@@ -224,25 +225,14 @@ export default function RegistrationPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-black mb-2">Building / Apt Number <span className="text-emerald-600">*</span></label>
-                    <input type="text" value={buildingApart} onChange={(e) => setBuildingApart(e.target.value)} placeholder="e.g. Apt 4B" className={inputClass} required />
+                    <label className="block text-sm font-bold text-black mb-2">Building / Apt Number</label>
+                    <input type="text" value={buildingApart} onChange={(e) => setBuildingApart(e.target.value)} placeholder="e.g. Apt 4B" className={inputClass} />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-black mb-2">Street <span className="text-emerald-600">*</span></label>
-                  <input type="text" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="e.g. 123 Main Street" className={inputClass} required />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-gray-100 pt-6">
-                <div>
-                  <label className="block text-sm font-bold text-black mb-2">Phone Number <span className="text-emerald-600">*</span></label>
-                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="08012345678" className={inputClass} required />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-black mb-2">Email Address <span className="text-emerald-600">*</span></label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className={inputClass} required />
+                  <label className="block text-sm font-bold text-black mb-2">Street</label>
+                  <input type="text" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="e.g. 123 Main Street" className={inputClass} />
                 </div>
               </div>
 
@@ -262,8 +252,6 @@ export default function RegistrationPage() {
             </form>
           )}
         </div>
-
-      
       </main>
 
       <footer className="relative z-10 border-t border-black bg-white py-6 mt-16">
