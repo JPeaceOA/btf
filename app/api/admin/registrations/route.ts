@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       id: reg.id,
       first_name: reg.firstName,
       last_name: reg.lastName,
-      number_of_guests: reg.numberOfGuests,
+      guest_category: reg.guestCategory,        // Updated field
       position: reg.position,
       organisation: reg.organisation,
       phone: reg.phone,
