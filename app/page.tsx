@@ -18,6 +18,7 @@ const guestCategories = [
   "Government Agency Representative",
   "Diaspora Participant",
   "Protocol / Security / Logistics",
+  "Nigerian Press Council Staff",
   "General Participant / Guest"
 ];
 
