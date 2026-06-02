@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -13,7 +14,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  // Updated: guest_category is now required
   const requiredFields = [
     "first_name", 
     "last_name", 
@@ -44,7 +44,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 });
   }
 
-  // Address is optional
+  // 1. Initial check to PREVENT DUPLICATES
+  const existingRegistration = await prisma.registration.findFirst({
+    where: {
+      OR: [
+        { email: email },
+        { phone: phone }
+      ]
+    }
+  });
+
+  if (existingRegistration) {
+    return NextResponse.json(
+      { error: "This email or phone number is already registered" },
+      { status: 409 }
+    );
+  }
+
   const address =
     body.address && typeof body.address === "object"
       ? (body.address as Record<string, unknown>)
@@ -57,7 +73,7 @@ export async function POST(request: NextRequest) {
       data: {
         firstName: (body.first_name as string).trim(),
         lastName: (body.last_name as string).trim(),
-        guestCategory,                    // Now required
+        guestCategory,
         position: (body.position as string).trim(),
         organisation: (body.organisation as string).trim(),
         country: str(address.country),
@@ -78,7 +94,17 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
+    // 2. Database-level check for duplicate registration (handles race conditions)
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return NextResponse.json(
+          { error: "This email or phone number is already registered" },
+          { status: 409 }
+        );
+      }
+    }
+
     const message = error instanceof Error ? error.message : "Unknown database error";
     console.error("Registration DB error:", error);
     return NextResponse.json({ error: `Database error: ${message}` }, { status: 500 });
@@ -95,7 +121,7 @@ export async function GET() {
       count: registrations.length, 
       data: registrations 
     });
-  } catch (error) {
+  } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json({ error: `Failed to fetch registrations: ${message}` }, { status: 500 });
   }
