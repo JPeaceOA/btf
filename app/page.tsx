@@ -29,7 +29,6 @@ export default function RegistrationPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [guestCategory, setGuestCategory] = useState("");
-  const [numberOfGuests, setNumberOfGuests] = useState(1);
   const [position, setPosition] = useState("");
   const [organisation, setOrganisation] = useState("");
   const [phone, setPhone] = useState("");
@@ -80,7 +79,6 @@ export default function RegistrationPage() {
       first_name: firstName,
       last_name: lastName,
       guest_category: guestCategory,
-      number_of_guests: numberOfGuests,
       position,
       organisation,
       address: {
@@ -196,21 +194,6 @@ export default function RegistrationPage() {
               <div>
                 <label className="block text-sm font-bold text-black mb-2">Organisation <span className="text-emerald-600">*</span></label>
                 <input type="text" value={organisation} onChange={(e) => setOrganisation(e.target.value)} placeholder="e.g. Ministry of Youth Development" className={inputClass} required />
-              </div>
-
-              {/* Number of Guests */}
-              <div>
-                <label className="block text-sm font-bold text-black mb-2">Number of Guests <span className="text-emerald-600">*</span></label>
-                <div className="flex items-center border border-black/70 rounded-sm w-36">
-                  <button type="button" onClick={() => setNumberOfGuests(Math.max(1, numberOfGuests - 1))} className="px-4 py-3 text-lg font-bold text-black hover:bg-gray-100 transition-colors select-none">−</button>
-                  <input
-                    type="number" min={1} max={10} value={numberOfGuests}
-                    onChange={(e) => setNumberOfGuests(Math.min(10, Math.max(1, Number(e.target.value))))}
-                    className="w-full text-center text-sm font-bold text-black bg-white outline-none py-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                  <button type="button" onClick={() => setNumberOfGuests(Math.min(10, numberOfGuests + 1))} className="px-4 py-3 text-lg font-bold text-black hover:bg-gray-100 transition-colors select-none">+</button>
-                </div>
-                <p className="text-[11px] text-black/50 mt-1">Including yourself</p>
               </div>
 
               {/* Address */}
